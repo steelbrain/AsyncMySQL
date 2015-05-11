@@ -15,7 +15,7 @@ class AsyncDatabase{
     return $this->exists($Table, $Where)->getWaitHandle()->join();
   }
   public function updateSync(string $Table, KeyedContainer<string, string> $Where, KeyedContainer<string, string> $ToUpdate):int{
-    return $this->update($Table, $ToUpdate, $Where)->getWaitHandle()->join();
+    return $this->update($Table, $Where, $ToUpdate)->getWaitHandle()->join();
   }
   public async function query(string $Query, KeyedContainer<string, string> $Arguments):Awaitable<AsyncDatabaseResult>{
     $Query = $this->ParseQuery($Query, $Arguments);
