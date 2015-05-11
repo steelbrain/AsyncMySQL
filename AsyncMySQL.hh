@@ -27,10 +27,9 @@ class AsyncDatabase{
   }
   <<__Memoize>>
   private function ParseQuery(string $Query, ImmMap<string, string> $Arguments):string{
-    $Con = $this->Con;
-    return preg_replace_callback('/(:[\w0-9])+/', function($Match) use($Arguments, $Con) {
+    return preg_replace_callback('/(:[\w0-9])+/', function($Match) use($Arguments) {
       if($Arguments->contains($Match[0])){
-        return $Con->escapeString($Arguments[$Match[0]]);
+        return $this->Con->escapeString($Arguments[$Match[0]]);
       } else {
         return $Match[0];
       }
