@@ -1,11 +1,5 @@
 <?hh //strict
 type AsyncDatabaseResult = shape('Count' => int, 'Rows' => Vector<Map<string, string>>, 'ID' => int);
-class AsyncDatabaseClient{
-  public static async function connect(string $Host, int $Port, string $Database, string $User, string $Password, int $Timeout = -1):Awaitable<AsyncDatabase>{
-    $AsyncDB = await AsyncMysqlClient::connect($Host, $Port, $Database, $User, $Password, $Timeout);
-    return new AsyncDatabase($AsyncDB);
-  }
-}
 class AsyncDatabase{
   public function __construct(private AsyncMysqlConnection $Con){}
   public function query(string $Query, ImmMap<string, string> $Arguments):AsyncDatabaseResult{
@@ -34,5 +28,9 @@ class AsyncDatabase{
         return $Match[0];
       }
     }, $Query);
+  }
+  public static async function connect(string $Host, int $Port, string $Database, string $User, string $Password, int $Timeout = -1):Awaitable<AsyncDatabase>{
+    $AsyncDB = await AsyncMysqlClient::connect($Host, $Port, $Database, $User, $Password, $Timeout);
+    return new AsyncDatabase($AsyncDB);
   }
 }

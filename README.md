@@ -28,13 +28,12 @@ $Query = await $DBAsync->aquery("Update Users set Plan = :plan, Status = :status
 
 #### API
 ```hack
-class AsyncDatabaseClient{
-  public static async function connect(string $Host, int $Port, string $Database, string $User, string $Password, int $Timeout = -1):Awaitable<AsyncDatabase>
-}
+type AsyncDatabaseResult = shape('Count' => int, 'Rows' => Vector<Map<string, string>>, 'ID' => int)
 class AsyncDatabase{
   public function __construct(private AsyncMysqlConnection $Con)
   public function query(string $Query, ImmMap<string, string> $Arguments):AsyncDatabaseResult
   public async function aquery(string $Query, ImmMap<string, string> $Arguments):Awaitable<AsyncDatabaseResult>
+  public static async function connect(string $Host, int $Port, string $Database, string $User, string $Password, int $Timeout = -1):Awaitable<AsyncDatabase>
 }
 ```
 
