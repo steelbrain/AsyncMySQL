@@ -11,6 +11,9 @@ class AsyncDatabase{
   public function deleteSync(string $Table, KeyedContainer<string, string> $Where):int{
     return $this->delete($Table, $Where)->getWaitHandle()->join();
   }
+  public function existsSync(string $Table, KeyedContainer<string, string> $Where):bool{
+    return $this->exists($Table, $Where)->getWaitHandle()->join();
+  }
   public function updateSync(string $Table, KeyedContainer<string, string> $Where, KeyedContainer<string, string> $ToUpdate):int{
     return $this->update($Table, $ToUpdate, $Where)->getWaitHandle()->join();
   }
@@ -58,6 +61,12 @@ class AsyncDatabase{
     $Query = "Delete from $Table ".$Where[0]." LIMIT 1";
     $Query = await $this->query($Query, $Where[1]);
     return $Query['Affected'];
+  }
+  public async function exists(string $Table, KeyedContainer<string, string> $Where):Awaitable<bool>{
+    $Where = $this->ParseWhere($Where);
+    $Query = "Select 1 from $Table ".$Where[0]." LIMIT 1";
+    $Query = await $this->query($Query, $Where[1]);
+    return (bool) $Query['Count'];
   }
   <<__Memoize>>
   private function ParseWhere(KeyedContainer<string, string> $Where):(string, Map<string, string>){
