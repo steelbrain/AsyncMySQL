@@ -8,8 +8,8 @@ class AsyncDatabase{
   public function insertSync(string $Table, KeyedContainer<string, string> $Arguments):int{
     return $this->insert($Table, $Arguments)->getWaitHandle()->join();
   }
-  public function deleteSync(string $Table, KeyedContainer<string, string> $Where):int{
-    return $this->delete($Table, $Where)->getWaitHandle()->join();
+  public function deleteSync(string $Table, KeyedContainer<string, string> $Where, ?int $Limit = null):int{
+    return $this->delete($Table, $Where, $Limit)->getWaitHandle()->join();
   }
   public function existsSync(string $Table, KeyedContainer<string, string> $Where):bool{
     return $this->exists($Table, $Where)->getWaitHandle()->join();
@@ -56,9 +56,12 @@ class AsyncDatabase{
     $Query = await $this->query($Query, $Arguments);
     return $Query['Affected'];
   }
-  public async function delete(string $Table, KeyedContainer<string, string> $Where):Awaitable<int>{
+  public async function delete(string $Table, KeyedContainer<string, string> $Where, ?int $Limit = null):Awaitable<int>{
+    if($Limit === null){
+      $Limit = 1;
+    }
     $Where = $this->ParseWhere($Where);
-    $Query = "Delete from $Table ".$Where[0]." LIMIT 1";
+    $Query = "Delete from $Table ".$Where[0]." LIMIT ".$Limit;
     $Query = await $this->query($Query, $Where[1]);
     return $Query['Affected'];
   }
@@ -77,7 +80,7 @@ class AsyncDatabase{
       $Arguments->set(':where_'.$Key, $Value);
     }
     if($Query->count()){
-      $Query = ' WHERE '.implode(', ', $Query);
+      $Query = ' WHERE '.implode('AND ', $Query);
     } else {
       $Query = '';
     }
