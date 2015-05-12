@@ -96,7 +96,7 @@ class AsyncDatabase{
       }
     }, $Query);
   }
-  public static async function connect(string $Host = "localhost", string $Database, int $Port = 3306, string $User = 'root', string $Password = '', int $Timeout = -1):Awaitable<AsyncDatabase>{
+  public static async function connect(string $Database, string $Host = "localhost", int $Port = 3306, string $User = 'root', string $Password = '', int $Timeout = -1):Awaitable<AsyncDatabase>{
     $AsyncDB = await AsyncMysqlClient::connect($Host, $Port, $Database, $User, $Password, $Timeout);
     return new AsyncDatabase($AsyncDB);
   }

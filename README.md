@@ -29,7 +29,7 @@ $Query = await $DBAsync->query("Update Users set Plan = :plan, Status = :status,
 #### Examples
 AsyncMySQL really makes SQL queries a piece of non-confusing straight-forward cake.
 ```hack
-$DB = await AsyncDatabase::connect();
+$DB = await AsyncDatabase::connect("records");
 $InsertID = $DB->insertSync("Clients", Map{
   'Username' => $Info['Username'],
   'Password' => $Info['Password'],
